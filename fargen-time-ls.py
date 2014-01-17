@@ -14,6 +14,12 @@ parser.add_argument('-b', '--before',
 	help='query for start and end dates before given date')
 parser.add_argument('keywords', metavar='KEYWORD', nargs='*',
 	help='query for given keywords')
+parser.add_argument('-n', '--null',
+	dest='null',
+	action='store_true',
+	default=False,
+	help='query for NULL messages')
+
 
 args = parser.parse_args()
 # if args.start:
@@ -89,11 +95,15 @@ for word in args.keywords:
 
 tlist.append('%')
 
-t = tuple(tlist)
 
-q1 = str( "message like ? and " * len(tlist) )[:-4]
+if args.null:
+    subquery = 'message IS NULL'
+    t = ()
+elif not args.null:
+    subquery = str( 'message LIKE ? AND ' * len(tlist) )[:-5]
+    t = tuple(tlist)
 
-query = 'SELECT rowid, start, end, round( cast( ( strftime("%s",end)-strftime("%s",start) ) AS real )/60/60, 2) AS duration, message FROM instance where ' + q1
+query = 'SELECT rowid, start, end, round( cast( ( strftime("%s",end)-strftime("%s",start) ) AS real )/60/60, 2) AS duration, message FROM instance WHERE ' + subquery
 c.execute(query, t)
 
 sep = " "
