@@ -87,7 +87,7 @@ tlist = []
 for word in args.keywords:
     tlist.append("%" + word + "%")
 
-tlist.append("%")
+tlist.append('%')
 
 t = tuple(tlist)
 
