@@ -103,7 +103,7 @@ elif not args.null:
     subquery = str( 'message LIKE ? AND ' * len(tlist) )[:-5]
     t = tuple(tlist)
 
-query = 'SELECT rowid, start, end, round( cast( ( strftime("%s",end)-strftime("%s",start) ) AS real )/60/60, 2) AS duration, message FROM instance WHERE ' + subquery
+query = 'SELECT rowid, start, end, round( cast( ( strftime("%s",end)-strftime("%s",start) ) AS real )/60/60, 2) AS duration, message FROM instance WHERE ' + subquery + ' ORDER BY start ASC LIMIT 0, 100 '
 c.execute(query, t)
 
 sep = " "
