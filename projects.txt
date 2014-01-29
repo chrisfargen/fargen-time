@@ -1,6 +1,4 @@
 exercise:
-travel:
-bike:exercise travel
-music:
-guitar:music
-
+chores:
+volunteer:
+sleep:
