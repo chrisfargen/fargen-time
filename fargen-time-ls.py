@@ -31,7 +31,7 @@ if args.after:
     subquery_date = 'AND ' + subquery_after
     # print 'a: ',args.after
     # print 'a2:',strp_after
-    print 'Displaying events after ', strp_after
+    print '[INFO] Displaying events after ', strp_after
 if args.before:
     strp_before = parse(args.before).replace(second=0, microsecond=0)
     args.before = strp_before.strftime(mysql_date_format_str)
@@ -39,7 +39,7 @@ if args.before:
     subquery_date = 'AND ' + subquery_before
     # print 'b: ',args.before
     # print 'b2:',strp_before
-    print 'Displaying events before', strp_before
+    print '[INFO] Displaying events before', strp_before
 if args.after and args.before:
     subquery_date = 'AND ' + subquery_after + ' AND ' + subquery_before
 # if args.message:
@@ -126,6 +126,6 @@ for row in c.fetchall():
     if row['duration'] != None:
 	total_duration = total_duration + float(row['duration'])
 
-print "Total: ", str(total_duration)
+print "[INFO] Total: ", str(total_duration)
 
 conn.close()

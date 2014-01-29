@@ -70,7 +70,7 @@ elif args.end and not args.start:
     #else:
 	print "[INFO] No option INSTANTANEOUS supplied; assuming incomplete"
 elif not args.start and not args.end:
-    print "[INFO] START and END not set;"
+    print "[INFO] START and END not set"
     if args.instantaneous:
 	print "[INFO] Option INSTANTANEOUS supplied; assuming current time"
 	args.start = now
@@ -95,7 +95,7 @@ t = (args.start, args.end, args.message,)
 c.execute("INSERT INTO instance VALUES (?,?,?)", t)
 
 if c.rowcount:
-    print "TIME:",c.lastrowid,"added.",c.rowcount,"row(s) affected."
+    print "[INFO] TIME:",c.lastrowid,"added.",c.rowcount,"row(s) affected."
 
 # Save (commit) the changes
 conn.commit()

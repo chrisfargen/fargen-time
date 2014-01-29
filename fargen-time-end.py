@@ -35,7 +35,7 @@ c = conn.cursor()
 c.execute("UPDATE instance SET end = ? WHERE rowid = ?", t)
 
 if c.rowcount:
-    print "TIME:",args.rowids[0],"marked as done at",args.end,".",c.rowcount,"row(s) affected."
+    print "[INFO] ",args.rowids[0],"marked as done at",args.end,".",c.rowcount,"row(s) affected."
 
 # Save (commit) the changes
 conn.commit()

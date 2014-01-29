@@ -83,7 +83,7 @@ t = (args.rowids[0],)
 c.execute("DELETE FROM instance WHERE rowid = ?", t)
 
 if c.rowcount:
-    print "TIME:",args.rowids[0],"removed.",c.rowcount,"row(s) affected."
+    print "[INFO] ", args.rowids[0], "removed.", c.rowcount, "row(s) affected."
 
 # Save (commit) the changes
 conn.commit()
