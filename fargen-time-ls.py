@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import argparse, time
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from dateutil.parser import parse
 
 mysql_date_format_str="%Y-%m-%d %H:%M"
@@ -20,18 +20,28 @@ parser.add_argument('-n', '--null',
 	default=False,
 	help='query for NULL messages')
 
+default_date = (datetime.now() - timedelta(days=1)).strftime(mysql_date_format_str)
+subquery_date = 'AND start > "' + default_date + '"'
 
 args = parser.parse_args()
-# if args.start:
-#     strp_start = parse(args.start).replace(second=0, microsecond=0)
-#     args.start = strp_start.strftime(mysql_date_format_str)
-#     print "s: ",args.start
-#     print "s2:",strp_start
-# if args.end:
-#     strp_end = parse(args.end).replace(second=0, microsecond=0)
-#     args.end = strp_end.strftime(mysql_date_format_str)
-#     print "e: ",args.end
-#     print "e2:",strp_end
+if args.after:
+    strp_after = parse(args.after).replace(second=0, microsecond=0)
+    args.after = strp_after.strftime(mysql_date_format_str)
+    subquery_after = '(start > "' + args.after + '" or end > "' + args.after + '")'
+    subquery_date = 'AND ' + subquery_after
+    # print 'a: ',args.after
+    # print 'a2:',strp_after
+    print 'Displaying events after ', strp_after
+if args.before:
+    strp_before = parse(args.before).replace(second=0, microsecond=0)
+    args.before = strp_before.strftime(mysql_date_format_str)
+    subquery_before = '(start < "' + args.before + '" or end < "' + args.before + '")'
+    subquery_date = 'AND ' + subquery_before
+    # print 'b: ',args.before
+    # print 'b2:',strp_before
+    print 'Displaying events before', strp_before
+if args.after and args.before:
+    subquery_date = 'AND ' + subquery_after + ' AND ' + subquery_before
 # if args.message:
 #     print "m: ",args.message
 # if args.instantaneous:
@@ -97,17 +107,25 @@ tlist.append('%')
 
 
 if args.null:
-    subquery = 'message IS NULL'
+    subquery_message = 'message IS NULL'
     t = ()
 elif not args.null:
-    subquery = str( 'message LIKE ? AND ' * len(tlist) )[:-5]
+    subquery_message = str( 'message LIKE ? AND ' * len(tlist) )[:-5]
     t = tuple(tlist)
 
-query = 'SELECT * FROM ( SELECT rowid, start, end, round( cast( ( strftime("%s",end)-strftime("%s",start) ) AS real )/60/60, 2) AS duration, message FROM instance WHERE ' + subquery + ' ORDER BY start DESC LIMIT 0, 20 ) sub ORDER BY start ASC'
+subquery_orderby = "ORDER BY start DESC"
+
+query = 'SELECT * FROM ( SELECT rowid, start, end, round( cast( ( strftime("%s",end)-strftime("%s",start) ) AS real )/60/60, 2) AS duration, message FROM instance WHERE ' + subquery_message + ' ' + subquery_date + ' ' + subquery_orderby + ' ) sub ORDER BY start ASC'
 c.execute(query, t)
 
-sep = " "
+sep = ' '
+total_duration = 0
+
 for row in c.fetchall():
-    print str(row['rowid']).rjust(4," "), sep, row['start'], sep, row['end'], sep, str(row['duration']).ljust(4,"0"), sep, row['message']
+    print str(row['rowid']).rjust(4,' '), sep, row['start'], sep, row['end'], sep, str(row['duration']).ljust(4,'0'), sep, row['message']
+    if row['duration'] != None:
+	total_duration = total_duration + float(row['duration'])
+
+print "Total: ", str(total_duration)
 
 conn.close()
