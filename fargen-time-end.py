@@ -35,7 +35,10 @@ c = conn.cursor()
 c.execute("UPDATE instance SET end = ? WHERE rowid = ?", t)
 
 if c.rowcount:
-    print "[INFO] ",args.rowids[0],"marked as done at",args.end,".",c.rowcount,"row(s) affected."
+    print "[INFO] " + str(args.rowids[0]) + " marked as done at " + args.end + ". " + str(c.rowcount) + " row(s) affected."
+    query = 'SELECT * FROM ( SELECT round( cast( ( strftime("%s",end)-strftime("%s",start) ) AS real )/60/60, 2) AS duration, start, end FROM instance WHERE rowid = ' + str(args.rowids[0]) + ' ) sub ORDER BY start ASC'
+    c.execute(query)
+    print "[INFO] Duration: ", str(c.fetchone()[0])
 
 # Save (commit) the changes
 conn.commit()

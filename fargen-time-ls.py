@@ -126,6 +126,6 @@ for row in c.fetchall():
     if row['duration'] != None:
 	total_duration = total_duration + float(row['duration'])
 
-print "[INFO] Total: ", str(total_duration)
+print "[INFO] Total duration: ", str(total_duration)
 
 conn.close()
