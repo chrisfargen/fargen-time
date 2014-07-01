@@ -1,3 +1,12 @@
+Assumptions:
+
+- User may wish to record instance with duration
+- User may wish to record instance with no duration
+- User may wish to record instance with incomplete details, perhaps to be amended at a later time
+- User may wish to record instance with a message
+- User may wish to record instance with no message
+
+
 Usage:
 
 # long version
@@ -20,25 +29,45 @@ fargen-time-add --end "2013-12-25 04:00" --instantaneous
 # complete, instantaneous, short version
 fargen-time-add -s "2013-12-25 04:00" -i
 
+Config settings:
+
+- AMBIGUITY_HANDLING={off,assume_unknown,assume_now}
+- 
+
+Rules:
+
+1.  A valid command requires a prespecified minimum of options
+    a.  If AMBIGUITY_HANDLING is "off", options must be sufficient to ascertain both START date and END date
+    b.  If AMBIGUITY_HANDLING is not "off", options must be sufficient to ascertain either START date or END date
+2.  A valid command requires valid values for all of its supplied options and no non-supplied options
+    a.  Format of supplied value must match format expected
+    b.  START date must precede END date
+    c.  Options must be anticipated
+3.  A valid command cannot contain contradictory options
+
 ----------------------------------------------------------------
 
-	START	END	INSTANTANEOUS	result
+	START	END	INSTANTANEOUS	value
 ----------------------------------------------------------------
-	yes	yes	yes		invalid
+	yes	yes	yes		invalid if START is not equal to END (rule #3)
 
-	yes	yes	no		if END is later than START, valid
+	yes	yes	no		invalid if START is invalid (rule #2a);
+	                                invalid if END is invalid (rule #2a);
+	                                invalid if END > START (rule #2b);
 
-	yes	no	yes		valid; set END to START
+	yes	no	yes		invalid if START is invalid (rule #2a)
 
-	yes	no	no		valid, incomplete
+	yes	no	no		invalid if START is invalid (rule #2a);
+	                                invalid if AMBIGUITY_HANDLING is "off" (rule #1a)
 
-	no	yes	yes		valid; set START to END
+	no	yes	yes		invalid if END is invalid (rule #2a)
 
-	no	yes	no		valid, incomplete
+	no	yes	no		invalid if END is invalid (rule #2a);
+	                                invalid if AMBIGUITY_HANDLING is "off" (rule #1a)
 
 	no	no	yes		set START and END to now
 
-	no	no	no		set START and END to now
+	no	no	no		invalid (rule #1)
 
 
 
