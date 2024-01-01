@@ -10,24 +10,24 @@ Assumptions:
 Usage:
 
 # long version
-fargen-time-add --start "2013-12-25 04:00" --end "2013-12-25 13:00" --message "I enjoyed this time." --project "socialize"
+fargentime add --start "2013-12-25 04:00" --end "2013-12-25 13:00" --message "I enjoyed this time." --project "socialize"
 
 # short version
-fargen-time-add -s "2013-12-25 04:00" -e "2013-12-25 13:00" -m "I enjoyed this time." -p "socialize"
+fargentime add -s "2013-12-25 04:00" -e "2013-12-25 13:00" -m "I enjoyed this time." -p "socialize"
 
 # inline project
-fargen-time-add --start "2013-12-25 04:00" -e "2013-12-25 13:00" -m "I enjoyed this time. +socialize"
+fargentime add --start "2013-12-25 04:00" -e "2013-12-25 13:00" -m "I enjoyed this time. +socialize"
 
 # incomplete, possibly ongoing
-fargen-time-add --start "2013-12-25 04:00"
-fargen-time-add --end "2013-12-25 04:00"
+fargentime add --start "2013-12-25 04:00"
+fargentime add --end "2013-12-25 04:00"
 
 # complete, instantaneous
-fargen-time-add --start "2013-12-25 04:00" --instantaneous
-fargen-time-add --end "2013-12-25 04:00" --instantaneous
+fargentime add --start "2013-12-25 04:00" --instantaneous
+fargentime add --end "2013-12-25 04:00" --instantaneous
 
 # complete, instantaneous, short version
-fargen-time-add -s "2013-12-25 04:00" -i
+fargentime add -s "2013-12-25 04:00" -i
 
 Config settings:
 
